@@ -1,0 +1,53 @@
+#PROMPT 1 
+I am creating a Data Privacy Vault so that PII (Personally identifiable information) becomes anonymized using node.js.  
+I need to start with the first step: have an endpoint so that it receivesa single string with a message that contains PII like names, emails and phone numbers and returns it anonymized replacing the whole name, email and phone with an alphanumeric token.  
+Please act as an experienced node.js developer and tell me step by step how would you do it. Ask me for information whenever you need it and use good coding practices and comments in the functions.  
+An example of the request can be: 
+curl -X POST http://localhost:3001/anonymize -H "Content-Type: application/json" -d '{"message":"oferta de trabajo para Dago Borda con email dborda@gmail.com y teléfono 3152319157"}'  
+The response to that request would be:  
+{  
+"anonymizedMessage": "oferta de trabajo para d7e8e0bf bd673df2 con email b09bde30 y teléfono dd195b6c"  
+} 
+
+#PROMPT 2
+Thanks. Now, let's implement the deanonymize endpoint where the calling should be like this:  
+curl -X POST http://localhost:3001/deanonymize -H "Content-Type: application/json" -d '{"anonymizedMessage":"oferta de trabajo para NAME_e1be92e2b3a5 con email EMAIL_8004719c6ea5 y telefono PHONE_40e83067b9cb"}'  
+and should return the original message:  
+{"message":"oferta de trabajo para Dago Borda con email dborda@gmail.com y teléfono 3152319157"} 
+
+#PROMPT 3
+Connect my application with persistence by changing the connection string to  
+mongodb+srv://jmcabreraa1_db_user:Mm44qu6VVltjtFsk@projectia.z8n6scu.mongodb.net/?appName=projectIA” 
+
+#PROMPT 4
+ curl -s -X POST http://localhost:3001/anonymize \ 
+    -H "Content-Type: application/json" \ 
+    -d '{"message":"John Doe, email john@example.com"}' 
+
+#PROMPT 5
+check Persistence was added to mongoDB using prompts to store the [private information, token] pairs.
+
+#PROMPT 6
+curl -X POST http://localhost:3001/anonymize -H "Content-Type: application/json" -d '{"message":"oferta de trabajo para Dago Borda con email dborda@gmail.com y teléfono 3152319157"}' 
+
+#PROMPT 7 
+curl -X POST http://localhost:3001/deanonymize -H "Content-Type: application/json" -d '{"anonymizedMessage":"oferta de trabajo para NAME_90d14800d0da con email EMAIL_a2defe4f2bf8 y teléfono PHONE_1234e70e1acc"}' 
+
+#PROMPT 8
+haga un nuevo endpoint que se llame secureChatGPT, este debe:
+Recibir un prompt que tenga información privada (nombres, teléfonos e emails)
+Anonimizarla usando las funciones ya implementadas
+Enviar el prompt a Chatgpt usando la clase creada en el punto 2
+Recibir la respuesta y desanonimizarla
+Enviar la respuesta al cliente final
+
+#PROMPT 9
+agrege OPENIA_API_KEY  
+
+#PROMPT 10
+cierra todos los procesos y terminales activas y ejecuta una nueva terminal ejecutando el paso a paso con un tiempo entre pasos de unos 15 segundos
+
+
+
+
+
