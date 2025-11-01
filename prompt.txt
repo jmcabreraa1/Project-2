@@ -47,6 +47,8 @@ agrege OPENIA_API_KEY
 #PROMPT 10
 cierra todos los procesos y terminales activas y ejecuta una nueva terminal ejecutando el paso a paso con un tiempo entre pasos de unos 15 segundos
 
+#PROMPT 11 
+genere un archivo Readme.md con la descripción del proyecto y los pasos para instalarlo
 
 
 
