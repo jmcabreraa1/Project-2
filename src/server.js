@@ -48,6 +48,11 @@ app.post('/deanonymize', async (req, res) => {
   }
 })
 
+// Helper function for delay
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 // Secure ChatGPT endpoint
 app.post('/secureChatGPT', async (req, res) => {
   const { prompt, systemPrompt, temperature, maxTokens, model } = req.body || {}
@@ -56,12 +61,33 @@ app.post('/secureChatGPT', async (req, res) => {
   }
 
   try {
+    // eslint-disable-next-line no-console
+    console.log('\n=== SECURE CHATGPT REQUEST ===')
+    // eslint-disable-next-line no-console
+    console.log('📥 Paso 1: Prompt original recibido:')
+    // eslint-disable-next-line no-console
+    console.log(`   "${prompt}"`)
+    // eslint-disable-next-line no-console
+    console.log('   ⏳ Esperando 15 segundos antes del siguiente paso...')
+    await delay(15000)
+
     await connectToDatabase()
 
     // 1) Anonymize the incoming prompt
+    // eslint-disable-next-line no-console
+    console.log('\n🔒 Paso 2: Anonimizando información privada...')
     const { anonymizedMessage: anonymizedPrompt } = await anonymizeMessage(prompt, { secret: SECRET })
+    // eslint-disable-next-line no-console
+    console.log('   Prompt anonimizado:')
+    // eslint-disable-next-line no-console
+    console.log(`   "${anonymizedPrompt}"`)
+    // eslint-disable-next-line no-console
+    console.log('   ⏳ Esperando 15 segundos antes del siguiente paso...')
+    await delay(15000)
 
     // 2) Call OpenAI with the anonymized prompt
+    // eslint-disable-next-line no-console
+    console.log('\n🤖 Paso 3: Enviando prompt anonimizado a OpenAI...')
     const headerKey = req.headers['x-openai-api-key']
     const ai = new OpenAIClient({ apiKey: typeof headerKey === 'string' ? headerKey : undefined })
     const aiResponse = await ai.completeText(anonymizedPrompt, {
@@ -70,15 +96,37 @@ app.post('/secureChatGPT', async (req, res) => {
       temperature,
       maxTokens
     })
+    // eslint-disable-next-line no-console
+    console.log('   Respuesta de OpenAI (aún anonimizada):')
+    // eslint-disable-next-line no-console
+    console.log(`   "${aiResponse}"`)
+    // eslint-disable-next-line no-console
+    console.log('   ⏳ Esperando 15 segundos antes del siguiente paso...')
+    await delay(15000)
 
     // 3) De-anonymize the AI response
+    // eslint-disable-next-line no-console
+    console.log('\n🔓 Paso 4: Desanonimizando respuesta de OpenAI...')
     const { message: deanonymizedResponse } = await deanonymizeMessage(aiResponse)
+    // eslint-disable-next-line no-console
+    console.log('   Respuesta final (desanonimizada):')
+    // eslint-disable-next-line no-console
+    console.log(`   "${deanonymizedResponse}"`)
+    // eslint-disable-next-line no-console
+    console.log('   ⏳ Esperando 15 segundos antes del siguiente paso...')
+    await delay(15000)
 
     // 4) Return the final response
+    // eslint-disable-next-line no-console
+    console.log('\n✅ Paso 5: Enviando respuesta al cliente')
+    // eslint-disable-next-line no-console
+    console.log('=== FIN DEL PROCESO ===\n')
     return res.json({ response: deanonymizedResponse })
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error('secureChatGPT failed:', err && err.message ? err.message : err)
+    console.error('\n❌ ERROR en secureChatGPT:', err && err.message ? err.message : err)
+    // eslint-disable-next-line no-console
+    console.log('=== FIN DEL PROCESO (CON ERROR) ===\n')
     return res.status(500).json({ error: 'Failed to process secure ChatGPT request.' })
   }
 })
